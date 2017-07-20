@@ -1,0 +1,8 @@
+commands.vanish.usage=/vanish [玩家名]
+commands.vanish.success=已设置了 %s 的隐身模式为: %s
+commands.vanish.invisible=隐身
+commands.vanish.visible=可见
+commands.fly.usage=/fly [玩家名]
+commands.fly.success=已设置了 %2$s 的飞行模式为: %1$s
+commands.fly.flyable=飞行中
+commands.fly.unflyable=未飞行

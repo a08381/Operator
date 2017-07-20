@@ -1,0 +1,16 @@
+[
+{
+  "modid": "operator",
+  "name": "Operator",
+  "description": "You can operator your own game.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Windmourn"],
+  "credits": "GalaxyBackdoorAssociation",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

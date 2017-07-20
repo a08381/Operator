@@ -1,0 +1,8 @@
+commands.vanish.usage=/vanish [player]
+commands.vanish.success=Vanish for %s: %s
+commands.vanish.invisible=invisible
+commands.vanish.visible=visible
+commands.fly.usage=/fly [player]
+commands.fly.success=Set fly mode %s for %s
+commands.fly.flyable=flying
+commands.fly.unflyable=not flying
