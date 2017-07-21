@@ -3,6 +3,7 @@ package cn.windmourn.operator;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -46,6 +47,11 @@ public class Operator {
             if (event.player.getName().equals(server.getServerOwner()))
                 server.getPlayerList().addOp(event.player.getGameProfile());
         }
+    }
+
+    @SubscribeEvent
+    public void onExplosion(ExplosionEvent.Detonate event) {
+        event.getExplosion().clearAffectedBlockPositions();
     }
 
 }

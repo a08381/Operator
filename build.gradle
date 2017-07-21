@@ -22,6 +22,13 @@ compileJava {
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+jar {
+    manifest {
+        attributes 'FMLCorePlugin'                      : 'cn.windmourn.operator.Loader',
+                'FMLCorePluginContainsFMLMod'        : 'true'
+    }
+}
+
 minecraft {
     version = "1.11.2-13.20.1.2386"
     runDir = "run"
