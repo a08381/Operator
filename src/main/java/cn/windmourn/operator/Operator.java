@@ -1,14 +1,16 @@
 package cn.windmourn.operator;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
+import cn.windmourn.operator.commands.CommandsManager;
+import cn.windmourn.operator.listeners.EntityExplosion;
+import cn.windmourn.operator.listeners.ExplosionBreak;
+import cn.windmourn.operator.listeners.PlayerLogin;
+import cn.windmourn.operator.utils.ConfigManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by lenovo on 2017/7/17.
@@ -23,35 +25,73 @@ public class Operator {
     public static final String MODID = "operator";
     public static final String VERSION = "1.0";
 
+    private Logger logger;
+    private ConfigManager config;
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        logger = event.getModLog();
+        config = ConfigManager.loadConfig(event.getSuggestedConfigurationFile());
+    }
+
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(this);
+        if (getConfig().getNeverExplosion()) MinecraftForge.EVENT_BUS.register(new EntityExplosion());
+        if (getConfig().getExplosionNoBreak()) MinecraftForge.EVENT_BUS.register(new ExplosionBreak());
+        if (getConfig().getOpsOwnerOnStart()) MinecraftForge.EVENT_BUS.register(new PlayerLogin());
     }
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandOp());
-        event.registerServerCommand(new CommandDeOp());
-        event.registerServerCommand(new CommandBan());
-        event.registerServerCommand(new CommandBanIP());
-        event.registerServerCommand(new CommandUnBan());
-        event.registerServerCommand(new CommandUnBanIP());
-        event.registerServerCommand(new CommandVanish());
-        event.registerServerCommand(new CommandFly());
+        if (event.getServer().isSinglePlayer()) CommandsManager.registerServerCommands(event);
+        if (getConfig().getRegisterExtraCommands()) CommandsManager.registerExtraCommands(event);
+
+        /*
+        add(55, "redstone_wire", new PandaRedstoneWire());
+        ReflectUtil.setStatic("REDSTONE_WIRE", Blocks.class, get("redstone_wire"));
+        */
     }
 
-    @SubscribeEvent
-    public void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.player instanceof EntityPlayerMP) {
-            MinecraftServer server = event.player.getServer();
-            if (event.player.getName().equals(server.getServerOwner()))
-                server.getPlayerList().addOp(event.player.getGameProfile());
+    /*
+
+    @Mod.EventHandler
+    public void serverStarted(FMLServerStartedEvent event) {
+        getLogger().info(Blocks.REDSTONE_WIRE.getClass().getName());
+    }
+
+    */
+
+    public ConfigManager getConfig() {
+        return config;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    /*
+
+    private static Block get(String s) {
+        return Block.REGISTRY.getObject(new ResourceLocation(s));
+    }
+
+    private static void add(int i, String s, Block block) {
+        try {
+            ResourceLocation rl = new ResourceLocation(s);
+            Class clzRegistry = Class.forName("net.minecraftforge.fml.common.registry.PersistentRegistryManager$PersistentRegistry");
+            Object eRegistry = Enum.valueOf(clzRegistry, "VANILLA");
+            FMLControlledNamespacedRegistry registry = ReflectUtil.invoke(eRegistry, "getRegistry", FMLControlledNamespacedRegistry.class, rl);
+            ReflectUtil.invoke(registry, "addObjectRaw", i, rl, block);
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+        }
+        for (IBlockState iblockdata : block.getBlockState().getValidStates()) {
+            int k = Block.REGISTRY.getIDForObject(block) << 4 | block.getMetaFromState(iblockdata);
+
+            Block.BLOCK_STATE_IDS.put(iblockdata, k);
         }
     }
 
-    @SubscribeEvent
-    public void onExplosion(ExplosionEvent.Detonate event) {
-        event.getExplosion().clearAffectedBlockPositions();
-    }
+    */
 
 }

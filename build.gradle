@@ -15,19 +15,12 @@ version = "1.0"
 group = "cn.windmourn.operator" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Operator"
 
-sourceCompatibility = targetCompatibility = "1.6" // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = "1.7" // Need this here so eclipse task generates correctly.
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.6"
+    sourceCompatibility = targetCompatibility = "1.7"
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-jar {
-    manifest {
-        attributes 'FMLCorePlugin'                      : 'cn.windmourn.operator.Loader',
-                'FMLCorePluginContainsFMLMod'        : 'true'
-    }
-}
 
 minecraft {
     version = "1.11.2-13.20.1.2386"

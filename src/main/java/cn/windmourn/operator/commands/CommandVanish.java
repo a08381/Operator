@@ -1,4 +1,4 @@
-package cn.windmourn.operator;
+package cn.windmourn.operator.commands;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -13,13 +13,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by lenovo on 2017/7/19.
+ * Created by lenovo on 2017/7/18.
  */
-public class CommandFly extends CommandBase {
+public class CommandVanish extends CommandBase {
 
     @Override
     public String getName() {
-        return "fly";
+        return "vanish";
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CommandFly extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands.fly.usage";
+        return "commands.vanish.usage";
     }
 
     @Override
@@ -37,13 +37,11 @@ public class CommandFly extends CommandBase {
         EntityPlayerMP player = getCommandSenderAsPlayer(sender);
         if (args.length >= 1) {
             player = getEntity(server, sender, args[0], EntityPlayerMP.class);
-            player.capabilities.allowFlying = !player.capabilities.allowFlying;
-            player.sendPlayerAbilities();
-            notifyCommandListener(sender, this, "commands.fly.success", player.getName(), new TextComponentTranslation(player.isInvisible() ? "commands.fly.flyable" : "commands.fly.unflyable"));
+            player.setInvisible(!player.isInvisible());
+            notifyCommandListener(sender, this, "commands.vanish.success", player.getName(), new TextComponentTranslation(player.isInvisible() ? "commands.vanish.invisible" : "commands.vanish.visible"));
         } else {
-            player.capabilities.allowFlying = !player.capabilities.allowFlying;
-            player.sendPlayerAbilities();
-            notifyCommandListener(sender, this, "commands.fly.success", player.getName(), new TextComponentTranslation(player.isInvisible() ? "commands.fly.flyable" : "commands.fly.unflyable"));
+            player.setInvisible(!player.isInvisible());
+            notifyCommandListener(sender, this, "commands.vanish.success", player.getName(), new TextComponentTranslation(player.isInvisible() ? "commands.vanish.invisible" : "commands.vanish.visible"));
         }
     }
 

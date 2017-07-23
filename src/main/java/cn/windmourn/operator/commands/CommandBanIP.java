@@ -1,4 +1,4 @@
-package cn.windmourn.operator;
+package cn.windmourn.operator.commands;
 
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -1,28 +1,25 @@
-package cn.windmourn.operator;
+package cn.windmourn.operator.commands;
 
-import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.*;
+import net.minecraft.command.server.CommandBanIp;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
- * Created by lenovo on 2017/7/17.
+ * Created by lenovo on 2017/7/18.
  */
-public class CommandOp extends CommandBase {
+public class CommandUnBanIP extends CommandBase {
 
     /**
      * Gets the name of the command
      */
     public String getName() {
-        return "op";
+        return "unbanip";
     }
 
     /**
@@ -33,12 +30,22 @@ public class CommandOp extends CommandBase {
     }
 
     /**
+     * Check if the given ICommandSender has permission to execute this command
+     *
+     * @param server The server instance
+     * @param sender The ICommandSender to check permissions on
+     */
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return server.getPlayerList().getBannedIPs().isLanServer() && super.checkPermission(server, sender);
+    }
+
+    /**
      * Gets the usage string for the command.
      *
      * @param sender The ICommandSender who is requesting usage details
      */
     public String getUsage(ICommandSender sender) {
-        return "commands.op.usage";
+        return "commands.unbanip.usage";
     }
 
     /**
@@ -49,17 +56,17 @@ public class CommandOp extends CommandBase {
      * @param args   The arguments that were passed
      */
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 1 && args[0].length() > 0) {
-            GameProfile gameprofile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
+        if (args.length == 1 && args[0].length() > 1) {
+            Matcher matcher = CommandBanIp.IP_PATTERN.matcher(args[0]);
 
-            if (gameprofile == null) {
-                throw new CommandException("commands.op.failed", new Object[]{args[0]});
+            if (matcher.matches()) {
+                server.getPlayerList().getBannedIPs().removeEntry(args[0]);
+                notifyCommandListener(sender, this, "commands.unbanip.success", new Object[]{args[0]});
             } else {
-                server.getPlayerList().addOp(gameprofile);
-                notifyCommandListener(sender, this, "commands.op.success", new Object[]{args[0]});
+                throw new SyntaxErrorException("commands.unbanip.invalid", new Object[0]);
             }
         } else {
-            throw new WrongUsageException("commands.op.usage", new Object[0]);
+            throw new WrongUsageException("commands.unbanip.usage", new Object[0]);
         }
     }
 
@@ -72,20 +79,7 @@ public class CommandOp extends CommandBase {
      * @param targetPos The block that the player's mouse is over, <tt>null</tt> if the mouse is not over a block
      */
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        if (args.length == 1) {
-            String s = args[args.length - 1];
-            List<String> list = Lists.<String>newArrayList();
-
-            for (GameProfile gameprofile : server.getOnlinePlayerProfiles()) {
-                if (!server.getPlayerList().canSendCommands(gameprofile) && doesStringStartWith(s, gameprofile.getName())) {
-                    list.add(gameprofile.getName());
-                }
-            }
-
-            return list;
-        } else {
-            return Collections.<String>emptyList();
-        }
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getPlayerList().getBannedIPs().getKeys()) : Collections.<String>emptyList();
     }
 
 }

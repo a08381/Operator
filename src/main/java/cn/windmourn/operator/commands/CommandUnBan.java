@@ -1,4 +1,4 @@
-package cn.windmourn.operator;
+package cn.windmourn.operator.commands;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.command.CommandBase;
