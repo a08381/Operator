@@ -9,8 +9,14 @@ public class ConfigManager {
     private Configuration config;
     private File configFile;
 
+    private boolean opsOwnerOnStart;
+    private boolean registerExtraCommands;
+    private boolean neverExplosion;
+    private boolean explosionNoBreak;
+
     private ConfigManager(File file) {
         configFile = file;
+        config = new Configuration(file);
         init();
         config.save();
     }
@@ -30,26 +36,26 @@ public class ConfigManager {
     }
 
     private void init() {
-        getOpsOwnerOnStart();
-        getRegisterExtraCommands();
-        getNeverExplosion();
-        getExplosionNoBreak();
+        opsOwnerOnStart = config.get(Configuration.CATEGORY_GENERAL, "OpsOwnerOnStart", true, "Make yourself be a Operator every server start. Default is true.").getBoolean();
+        registerExtraCommands = config.get(Configuration.CATEGORY_GENERAL, "RegisterExtraCommands", true, "Rigister some commands like fly, vanish, etc. Default is true.").getBoolean();
+        neverExplosion = config.get(Configuration.CATEGORY_GENERAL, "NeverExplosion", false, "ALL entities explosion will be disabled. Default is false.").getBoolean();
+        explosionNoBreak = config.get(Configuration.CATEGORY_GENERAL, "ExplosionNoBreak", true, "Explosion will NEVER break a block. Default is true.").getBoolean();
     }
 
-    public boolean getOpsOwnerOnStart() {
-        return config.get(Configuration.CATEGORY_GENERAL, "OpsOwnerOnStart", true, "Make yourself be a Operator every server start. Default is true.").getBoolean();
+    public boolean isOpsOwnerOnStart() {
+        return opsOwnerOnStart;
     }
 
-    public boolean getRegisterExtraCommands() {
-        return config.get(Configuration.CATEGORY_GENERAL, "RegisterExtraCommands", true, "Rigister some commands like fly, vanish, etc. Default is true.").getBoolean();
+    public boolean isRegisterExtraCommands() {
+        return registerExtraCommands;
     }
 
-    public boolean getNeverExplosion() {
-        return config.get(Configuration.CATEGORY_GENERAL, "NeverExplosion", false, "ALL entities explosion will be disabled. Default is false.").getBoolean();
+    public boolean isNeverExplosion() {
+        return neverExplosion;
     }
 
-    public boolean getExplosionNoBreak() {
-        return config.get(Configuration.CATEGORY_GENERAL, "ExplosionNoBreak", true, "Explosion will NEVER break a block. Default is true.").getBoolean();
+    public boolean isExplosionNoBreak() {
+        return explosionNoBreak;
     }
 
 }
