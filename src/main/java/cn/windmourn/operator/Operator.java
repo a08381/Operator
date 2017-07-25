@@ -45,19 +45,7 @@ public class Operator {
     public void serverStarting(FMLServerStartingEvent event) {
         if (event.getServer().isSinglePlayer()) CommandsManager.registerServerCommands(event);
         if (getConfig().isRegisterExtraCommands()) CommandsManager.registerExtraCommands(event);
-
-        // add(55, "redstone_wire", new PandaRedstoneWire());
-        // ReflectUtil.setStatic("REDSTONE_WIRE", Blocks.class, get("redstone_wire"));
     }
-
-    /*
-
-    @Mod.EventHandler
-    public void serverStarted(FMLServerStartedEvent event) {
-        getLogger().info(Blocks.REDSTONE_WIRE.getClass().getName());
-    }
-
-    */
 
     public ConfigManager getConfig() {
         return config;
@@ -66,31 +54,5 @@ public class Operator {
     public Logger getLogger() {
         return logger;
     }
-
-    /*
-
-    private static Block get(String s) {
-        return Block.REGISTRY.getObject(new ResourceLocation(s));
-    }
-
-    @SuppressWarnings("deprecation")
-    private static void add(int i, String s, Block block) {
-        try {
-            ResourceLocation rl = new ResourceLocation(s);
-            Class clzRegistry = Class.forName("net.minecraftforge.fml.common.registry.PersistentRegistryManager$PersistentRegistry");
-            Object eRegistry = Enum.valueOf(clzRegistry, "ACTIVE");
-            FMLControlledNamespacedRegistry registry = ReflectUtil.invoke(eRegistry, "getRegistry", FMLControlledNamespacedRegistry.class, rl, null);
-            ReflectUtil.invoke(registry, "addObjectRaw", i, rl, block);
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
-        for (IBlockState state : block.getBlockState().getValidStates()) {
-            int k = Block.REGISTRY.getIDForObject(block) << 4 | block.getMetaFromState(state);
-
-            Block.BLOCK_STATE_IDS.put(state, k);
-        }
-    }
-
-    */
 
 }
