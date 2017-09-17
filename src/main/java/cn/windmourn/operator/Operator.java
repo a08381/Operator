@@ -1,8 +1,9 @@
 package cn.windmourn.operator;
 
 import cn.windmourn.operator.commands.CommandsManager;
-import cn.windmourn.operator.listeners.EntityExplosion;
 import cn.windmourn.operator.listeners.ExplosionBreak;
+import cn.windmourn.operator.listeners.FarmlandChange;
+import cn.windmourn.operator.listeners.PlayerDisconnect;
 import cn.windmourn.operator.listeners.PlayerLogin;
 import cn.windmourn.operator.utils.ConfigManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,9 +37,10 @@ public class Operator {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        if (getConfig().isNeverExplosion()) MinecraftForge.EVENT_BUS.register(new EntityExplosion());
-        if (getConfig().isExplosionNoBreak()) MinecraftForge.EVENT_BUS.register(new ExplosionBreak());
+        if (getConfig().isCreeperHealMode()) MinecraftForge.EVENT_BUS.register(new ExplosionBreak());
         if (getConfig().isOpsOwnerOnStart()) MinecraftForge.EVENT_BUS.register(new PlayerLogin());
+        if (getConfig().isNoFallenOnFarmland()) MinecraftForge.EVENT_BUS.register(new FarmlandChange());
+        MinecraftForge.EVENT_BUS.register(new PlayerDisconnect());
     }
 
     @Mod.EventHandler

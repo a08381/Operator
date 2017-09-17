@@ -28,6 +28,19 @@ public class ReflectUtil {
         throw new IllegalArgumentException("No field: " + name);
     }
 
+    public static void set(Object obj, String name, Object value) {
+        set(obj, obj.getClass(), name, value);
+    }
+
+    public static void set(Object obj, Class<?> clazz, String name, Object value) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (name.equals(field.getName())) {
+                set(obj, field, value);
+            }
+        }
+        throw new IllegalArgumentException("No field: " + name);
+    }
+
     public static <T> T invoke(Object obj, String name, Class<T> type, Object... args) {
         return invoke(obj, obj.getClass(), name, type, args);
     }
@@ -77,6 +90,15 @@ public class ReflectUtil {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public static void set(Object obj, Field field, Object value) {
+        try {
+            field.setAccessible(true);
+            field.set(obj, value);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static <T> T invoke(Object obj, Method method, Class<T> type, Object... args) {

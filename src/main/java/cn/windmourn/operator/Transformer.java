@@ -1,36 +1,53 @@
 package cn.windmourn.operator;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.objectweb.asm.*;
 
 public class Transformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        InputStream is = getClass().getResourceAsStream("/" + transformedName.replace('.', '_') + ".patch");
-        if (is != null) {
-            dbg("Operator: Replacing " + name + " -> " + transformedName);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] temp = new byte[4096];
-            int len;
-            try {
-                while ((len = is.read(temp)) != -1) {
-                    baos.write(temp, 0, len);
-                }
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return baos.toByteArray();
+        if (name.equals("net.minecraftforge.common.ReflectionAPI")) {
+            return transform001(basicClass);
+        } else {
+            return basicClass;
         }
-        return basicClass;
     }
 
-    private static void dbg(String str) {
-        System.out.println(str);
+    private byte[] transform001(byte[] bytes) {
+        ClassReader classReader = new ClassReader(bytes);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classReader.accept(new a(classWriter), ClassReader.EXPAND_FRAMES);
+        return classWriter.toByteArray();
+    }
+
+    private class a extends ClassVisitor {
+
+        public a(ClassVisitor cv) {
+            super(Opcodes.ASM5, cv);
+        }
+
+        @Override
+        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+            if (name.equals("checkPermission")) {
+                MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+                mv.visitCode();
+                mv.visitInsn(Opcodes.ICONST_1);
+                mv.visitInsn(Opcodes.IRETURN);
+                mv.visitMaxs(1, 0);
+                mv.visitEnd();
+                return new b();
+            }
+            return super.visitMethod(access, name, desc, signature, exceptions);
+        }
+    }
+
+    private class b extends MethodVisitor {
+
+        public b() {
+            super(Opcodes.ASM5, null);
+        }
+
     }
 
 }

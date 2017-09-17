@@ -16,6 +16,7 @@ public class CommandsManager {
     public static void registerExtraCommands(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandVanish());
         event.registerServerCommand(new CommandFly());
+        event.registerServerCommand(new CommandSuper());
     }
 
 }

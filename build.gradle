@@ -24,8 +24,8 @@ compileJava {
 
 jar {
         manifest {
-                attributes 'FMLCorePlugin'                      : 'cn.windmourn.operator.Loader',
-                           'FMLCorePluginContainsFMLMod'        : 'true'
+               attributes 'FMLCorePlugin'                      : 'cn.windmourn.operator.LoaderTweaker',
+                          'FMLCorePluginContainsFMLMod'        : 'true'
             }
     }
 

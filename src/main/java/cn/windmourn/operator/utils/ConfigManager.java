@@ -11,8 +11,8 @@ public class ConfigManager {
 
     private boolean opsOwnerOnStart;
     private boolean registerExtraCommands;
-    private boolean neverExplosion;
-    private boolean explosionNoBreak;
+    private boolean creeperHealMode;
+    private boolean noFallenOnFarmland;
 
     private ConfigManager(File file) {
         configFile = file;
@@ -38,8 +38,16 @@ public class ConfigManager {
     private void init() {
         opsOwnerOnStart = config.get(Configuration.CATEGORY_GENERAL, "OpsOwnerOnStart", true, "Make yourself be a Operator every server start. Default is true.").getBoolean();
         registerExtraCommands = config.get(Configuration.CATEGORY_GENERAL, "RegisterExtraCommands", true, "Rigister some commands like fly, vanish, etc. Default is true.").getBoolean();
-        neverExplosion = config.get(Configuration.CATEGORY_GENERAL, "NeverExplosion", false, "ALL entities explosion will be disabled. Default is false.").getBoolean();
-        explosionNoBreak = config.get(Configuration.CATEGORY_GENERAL, "ExplosionNoBreak", true, "Explosion will NEVER break a block. Default is true.").getBoolean();
+        creeperHealMode = config.get(Configuration.CATEGORY_GENERAL, "CreeperHealMode", false, "Explosion will NEVER break a block. now is unusable. Default is false.").getBoolean();
+        noFallenOnFarmland = config.get(Configuration.CATEGORY_GENERAL, "NoFallenOnFarmland", true, "Fallen on farmland will not make it turn back to dirt. Default is true.").getBoolean();
+    }
+
+    public void set(String key, String value) {
+        config.get(Configuration.CATEGORY_GENERAL, key, value, "netease.");
+    }
+
+    public void save() {
+        config.save();
     }
 
     public boolean isOpsOwnerOnStart() {
@@ -50,12 +58,12 @@ public class ConfigManager {
         return registerExtraCommands;
     }
 
-    public boolean isNeverExplosion() {
-        return neverExplosion;
+    public boolean isCreeperHealMode() {
+        return creeperHealMode;
     }
 
-    public boolean isExplosionNoBreak() {
-        return explosionNoBreak;
+    public boolean isNoFallenOnFarmland() {
+        return noFallenOnFarmland;
     }
 
 }

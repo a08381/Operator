@@ -1,38 +1,30 @@
 package cn.windmourn.operator;
 
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraft.launchwrapper.ITweaker;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 
-import javax.annotation.Nullable;
-import java.util.Map;
+import java.io.File;
+import java.util.List;
 
-@IFMLLoadingPlugin.TransformerExclusions("cn.windmourn.operator")
-@IFMLLoadingPlugin.MCVersion("1.11.2")
-public class Loader implements IFMLLoadingPlugin {
+public class Loader implements ITweaker {
 
     @Override
-    public String[] getASMTransformerClass() {
-        return new String[]{"cn.windmourn.operator.Transformer"};
+    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
     }
 
     @Override
-    public String getModContainerClass() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public String getSetupClass() {
-        return null;
+    public void injectIntoClassLoader(LaunchClassLoader classLoader) {
+        classLoader.registerTransformer("cn.windmourn.operator.Transformer");
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {
-
+    public String getLaunchTarget() {
+        return "net.minecraft.client.main.Main";
     }
 
     @Override
-    public String getAccessTransformerClass() {
-        return null;
+    public String[] getLaunchArguments() {
+        return new String[0];
     }
 
 }
